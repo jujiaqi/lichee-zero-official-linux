@@ -49,6 +49,21 @@
 	#size-cells = <1>;
 	interrupt-parent = <&gic>;
 
+	chosen {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges;
+
+		simplefb_lcd: framebuffer@0 {
+			compatible = "allwinner,simple-framebuffer",
+				     "simple-framebuffer";
+			allwinner,pipeline = "de0-lcd0";
+			clocks = <&ccu CLK_BUS_TCON0>, <&display_clocks 0>,
+				 <&display_clocks 6>, <&ccu CLK_TCON0>;
+			status = "disabled";
+		};
+	};
+
 	cpus {
 		#address-cells = <1>;
 		#size-cells = <0>;
