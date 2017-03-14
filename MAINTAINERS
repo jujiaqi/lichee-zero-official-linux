@@ -9377,6 +9377,12 @@ F:	drivers/power/supply/bq27xxx_battery_i2c.c
 F:	drivers/power/supply/isp1704_charger.c
 F:	drivers/power/supply/rx51_battery.c
 
+NSIWAY NS2009 TOUCHSCREEN CONTROLLER
+M:	Icenowy Zheng <icenowy@aosc.xyz>
+L:	linux-input@vger.kernel.org
+S:	Maintained
+F:	drivers/input/touchscreen/ns2009.c
+
 NTB AMD DRIVER
 M:	Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
 L:	linux-ntb@googlegroups.com

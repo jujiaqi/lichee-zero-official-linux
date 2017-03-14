@@ -639,6 +639,19 @@ config TOUCHSCREEN_MIGOR
 	  To compile this driver as a module, choose M here: the
 	  module will be called migor_ts.
 
+config TOUCHSCREEN_NS2009
+	tristate "Nsiway NS2009 touchscreen"
+	depends on I2C
+	select INPUT_POLLDEV
+	help
+	  Say Y here to enable Nsiway NS2009 resistive touchscreen
+	  controller support.
+
+	  If unsure, say N.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called ns2009.
+
 config TOUCHSCREEN_TOUCHRIGHT
 	tristate "Touchright serial touchscreen"
 	select SERIO
