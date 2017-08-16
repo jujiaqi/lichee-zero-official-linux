@@ -77,6 +77,10 @@
 	};
 };
 
+&ehci0 {
+	status = "okay";
+};
+
 &mmc0 {
 	pinctrl-0 = <&mmc0_pins_a>;
 	pinctrl-names = "default";
@@ -93,6 +97,10 @@
 		compatible = "nsiway,ns2009";
 		reg = <0x48>;
 	};
+};
+
+&ohci0 {
+	status = "okay";
 };
 
 &uart0 {
