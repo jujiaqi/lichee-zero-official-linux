@@ -126,7 +126,7 @@ static SUNXI_CCU_NK_WITH_GATE_LOCK_POSTDIV(pll_periph1_clk, "pll-periph1",
 static const char * const cpu_parents[] = { "osc32k", "osc24M",
 					     "pll-cpu", "pll-cpu" };
 static SUNXI_CCU_MUX(cpu_clk, "cpu", cpu_parents,
-		     0x050, 16, 2, CLK_IS_CRITICAL);
+		     0x050, 16, 2, CLK_IS_CRITICAL | CLK_SET_RATE_PARENT);
 
 static SUNXI_CCU_M(axi_clk, "axi", "cpu", 0x050, 0, 2, 0);
 
@@ -568,6 +568,20 @@ static const struct sunxi_ccu_desc sun8i_v3s_ccu_desc = {
 	.num_resets	= ARRAY_SIZE(sun8i_v3s_ccu_resets),
 };
 
+static struct ccu_pll_nb sun8i_v3s_pll_cpu_nb = {
+	.common	= &pll_cpu_clk.common,
+	/* copy from pll_cpu_clk */
+	.enable	= BIT(31),
+	.lock	= BIT(28),
+};
+
+static struct ccu_mux_nb sun8i_v3s_cpu_nb = {
+	.common 		= &cpu_clk.common,
+	.cm 			= &cpu_clk.mux,
+	.delay_us 		= 1, /* > 8 clock cycles at 24 MHz */
+	.bypass_index 	= 1, /* index of 24 MHz oscillator */
+};
+
 static void __init sun8i_v3s_ccu_setup(struct device_node *node)
 {
 	void __iomem *reg;
@@ -586,6 +600,13 @@ static void __init sun8i_v3s_ccu_setup(struct device_node *node)
 	writel(val | (3 << 16), reg + SUN8I_V3S_PLL_AUDIO_REG);
 
 	sunxi_ccu_probe(node, reg, &sun8i_v3s_ccu_desc);
+
+	/* Gate then ungate PLL CPU after any rate changes */
+	ccu_pll_notifier_register(&sun8i_v3s_pll_cpu_nb);
+
+	/* Reparent CPU during PLL CPU rate changes */
+	ccu_mux_notifier_register(pll_cpu_clk.common.hw.clk,
+				  &sun8i_v3s_cpu_nb);
 }
 CLK_OF_DECLARE(sun8i_v3s_ccu, "allwinner,sun8i-v3s-ccu",
 	       sun8i_v3s_ccu_setup);
